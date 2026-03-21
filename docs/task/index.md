@@ -32,3 +32,8 @@
 ## 任务
 
 - [-] [**FEAT-001 设计并实现基于 ed25519 签名验证的发布系统**](FEAT-001.md) `P0`
+- [x] [**FEAT-002 Implement core module (types, signing, canonical, hash)**](FEAT-002.md) `P0`
+- [x] [**FEAT-003 Implement server public API (DB, /v1/keys, /v1/config)**](FEAT-003.md) `P0`
+- [ ] [**FEAT-004 Implement server admin API (approval, auth, RBAC)**](FEAT-004.md) `P0`
+- [-] [**FEAT-005 Implement client library (poller, keyring, state)**](FEAT-005.md) `P0`
+- [ ] [**FEAT-006 E2E tests and documentation**](FEAT-006.md) `P1`
