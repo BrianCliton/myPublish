@@ -33,8 +33,16 @@ export class Store {
     this._db.exec("PRAGMA foreign_keys=ON;");
   }
 
-  /** Expose raw DB handle for test seeding only. */
-  get db(): Database {
+  /** Raw DB handle - protected for subclass use only. */
+  protected get db(): Database {
+    return this._db;
+  }
+
+  /** Expose raw DB handle for test seeding. Only available in test env. */
+  get testDb(): Database {
+    if (process.env.NODE_ENV !== "test") {
+      throw new Error("testDb is only available in test environment");
+    }
     return this._db;
   }
 

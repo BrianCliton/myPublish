@@ -1,4 +1,7 @@
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
+
+process.env.NODE_ENV = "test";
+
 import { Hono } from "hono";
 import { Store } from "../../src/server/db/store.ts";
 import { createApp } from "../../src/server/index.ts";

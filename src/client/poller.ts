@@ -158,7 +158,7 @@ export class Poller {
     }
 
     const manifestData = await manifestResponse.json();
-    const manifest = ManifestSchema.parse(manifestData);
+    const manifest = ManifestSchema.parse(manifestData.manifest ?? manifestData);
 
     // No update needed if version hasn't changed
     if (manifest.version <= state.last_config_version) {
