@@ -379,6 +379,10 @@ api('GET', '/dev/status').then(function(d) {
 
 export function createDevUiRoute(): Hono {
   const app = new Hono();
-  app.get("/", (c) => c.html(HTML));
+  app.get("/", (c) => {
+    // Allow inline scripts/styles for the dev UI page
+    c.header("Content-Security-Policy", "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'");
+    return c.html(HTML);
+  });
   return app;
 }
