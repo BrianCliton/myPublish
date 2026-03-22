@@ -44,6 +44,7 @@ const SEED_V1: Config = {
     api: "https://api.example.com/v2",
     cdn: "https://cdn.example.com",
     support: "https://support.example.com",
+    website: "https://www.example.com",
   },
   announcements: [
     {
@@ -82,6 +83,7 @@ const SEED_V2: Config = {
     api: "https://api.example.com/v3",   // ← API 升级到 v3
     cdn: "https://cdn.example.com",
     support: "https://support.example.com",
+    website: "https://www.example.com",
   },
   announcements: [
     {

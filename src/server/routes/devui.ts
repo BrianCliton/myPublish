@@ -4,7 +4,7 @@ const EXAMPLE_CONFIG = JSON.stringify(
   {
     update: { latest_version: "2.6.0", min_version: "2.0.0", download_url: "https://cdn.example.com/releases/v2.6.0.pkg", sha256: "0000000011111111222222223333333344444444555555556666666677777777", release_notes: "新功能发布", force: false },
     features: { dark_mode: true, new_onboarding: true, payment_v2: true, analytics: true },
-    endpoints: { api: "https://api.example.com/v3", cdn: "https://cdn.example.com", support: "https://support.example.com" },
+    endpoints: { api: "https://api.example.com/v3", cdn: "https://cdn.example.com", support: "https://support.example.com", website: "https://www.example.com" },
     announcements: [{ id: "ann-2025-02", type: "banner", title: "新版本发布", content: "v2.6.0 正式发布！", priority: 2, expires_at: 1780000000 }],
     custom: { security: { min_tls: "1.3", cert_pin: "sha256/XXXXYYYYZZZZZZZZ99999999XXXXXXXX" }, maintenance: { enabled: false, message: "" } },
   },
