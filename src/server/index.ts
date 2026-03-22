@@ -71,6 +71,7 @@ export function startServer(options: ServerOptions = {}): ServerInstance {
     // Set safe defaults so the server starts with a single command, no .env needed
     process.env.JWT_SECRET ??= "dev-jwt-secret-do-not-use-in-production";
     process.env.KEY_ENCRYPTION_KEY ??= "dev-key-encryption-key-do-not-use-in-production";
+    process.env.MIN_APPROVALS ??= "1"; // Only 1 reviewer needed in dev
   }
 
   // In dev UI mode, use an in-memory DB so every restart is a clean slate
