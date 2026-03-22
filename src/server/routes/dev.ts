@@ -172,6 +172,11 @@ export function createDevRoutes(store: AdminStore): Hono {
     return c.json({
       version,
       status: "published",
+      // Full payload exactly as the client receives it from GET /v1/config/latest
+      client_payload: {
+        manifest: signedManifest,
+        config: configObj,
+      },
       steps: {
         canonical_json: canonical,
         content_hash: contentHash,

@@ -167,6 +167,11 @@ pre{background:#0d1117;border:1px solid #21262d;border-radius:5px;padding:10px;f
       <div class="card-title">④ Ed25519 签名结果（签名私钥签的）</div>
       <div class="kv"><span class="kv-label">Signature</span><span class="kv-val" id="ps-sig" style="word-break:break-all"></span><button class="copy-btn" onclick="copy('ps-sig')">复制</button></div>
     </div>
+    <div class="card" id="ps-client-payload" style="display:none;border-color:#388bfd">
+      <div class="card-title" style="color:#79c0ff">⑤ 客户端收到的完整数据包（GET /v1/config/latest 的响应）</div>
+      <p style="color:#8b949e;font-size:11px;margin-bottom:6px">这就是客户端拉取到的原始内容，包含签名后的 manifest 和配置正文</p>
+      <pre id="ps-client-json" style="max-height:360px"></pre>
+    </div>
   </div>
 
   <hr class="divider">
@@ -291,6 +296,10 @@ function doPublish() {
     document.getElementById('ps-size').textContent = ps.content_size + ' 字节';
     document.getElementById('ps-unsigned').textContent = JSON.stringify(ps.unsigned_manifest, null, 2);
     setKV('ps-sig', ps.signature);
+
+    // Show full client payload
+    document.getElementById('ps-client-payload').style.display = 'block';
+    document.getElementById('ps-client-json').textContent = JSON.stringify(d.client_payload, null, 2);
 
     // Pre-fill manual verify with last signature
     document.getElementById('mv-sig').value = ps.signature;
