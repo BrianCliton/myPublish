@@ -339,7 +339,7 @@ function doSign() {
       '<div class="msg ok">✓ 签名成功</div>'
       + '<div class="kv" style="margin-top:6px"><span class="kv-label">Signature</span>'
       + '<span class="kv-val" id="ms-sig-out" style="word-break:break-all">'+d.signature+'</span>'
-      + '<button class="copy-btn" onclick="copy(\'ms-sig-out\')">复制</button></div>'
+      + '<button class="copy-btn" onclick="copy(\\'ms-sig-out\\')">复制</button></div>'
       + '<div style="color:#8b949e;font-size:11px;margin-top:4px">使用私钥: '+d.private_key_used+'</div>';
     // Auto-fill verify tab
     document.getElementById('mv-data').value = data;
