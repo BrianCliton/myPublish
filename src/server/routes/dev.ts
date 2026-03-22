@@ -197,6 +197,7 @@ export function createDevRoutes(store: AdminStore): Hono {
       publisher_token: publisherToken,
       reviewer_token: reviewerToken,
       seeded: { published_version: v1, pending_version: v2 },
+      form_preset: SEED_V2,
     });
   });
 

@@ -109,6 +109,32 @@ pre{background:#0d1117;border:1px solid #21262d;border-radius:5px;padding:10px;f
 .confirm-row{display:flex;align-items:center;gap:8px;padding:8px;background:#2d0a0a;border:1px solid #da3633;border-radius:5px;margin:8px 0}
 .confirm-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#da3633}
 .confirm-row label{color:#f85149;font-size:12px;cursor:pointer}
+.fsec{background:#0d1117;border:1px solid #21262d;border-radius:5px;padding:9px 10px;margin-bottom:7px}
+.fsec-title{font-size:10px;color:#8b949e;font-weight:500;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.06em}
+.fgrid{display:grid;grid-template-columns:88px 1fr;gap:5px 8px;align-items:center}
+.flabel{color:#8b949e;font-size:11px;text-align:right;white-space:nowrap}
+.finput,.fselect{width:100%;background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:4px;padding:5px 8px;font-family:inherit;font-size:12px;outline:none}
+.finput:focus,.fselect:focus{border-color:#388bfd}.fselect{cursor:pointer}
+.fadd{background:none;border:1px solid #30363d;color:#8b949e;padding:2px 7px;font-size:10px;border-radius:4px;cursor:pointer;font-family:inherit}
+.fadd:hover{color:#e6edf3;border-color:#8b949e;background:none}
+.ep-row{display:grid;grid-template-columns:100px 1fr 22px;gap:5px;align-items:center;margin-bottom:5px}
+.ep-k{background:#161b22;color:#79c0ff;border:1px solid #30363d;border-radius:4px;padding:5px 8px;font-family:inherit;font-size:12px;outline:none;width:100%}
+.ep-k:focus{border-color:#388bfd}
+.delbtn{background:none;border:none;color:#555;font-size:16px;cursor:pointer;padding:0;line-height:1;text-align:center;flex-shrink:0}
+.delbtn:hover{color:#f85149}
+.feat-row{display:grid;grid-template-columns:1fr auto 22px;gap:8px;align-items:center;margin-bottom:5px;background:#161b22;border:1px solid #21262d;border-radius:4px;padding:5px 8px}
+.feat-key{background:none;border:none;color:#e6edf3;font-family:inherit;font-size:12px;outline:none;width:100%}
+.tgl-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.tgl{position:relative;display:inline-block;width:32px;height:18px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0}
+.tgl-sl{position:absolute;cursor:pointer;inset:0;background:#30363d;border-radius:9px;transition:.2s}
+.tgl input:checked+.tgl-sl{background:#238636}
+.tgl-sl:before{content:'';position:absolute;height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.tgl input:checked+.tgl-sl:before{transform:translateX(14px)}
+.tgl-lbl{font-size:10px;color:#555;min-width:22px}
+.ann-card{background:#161b22;border:1px solid #30363d;border-radius:5px;padding:8px;margin-bottom:6px}
+.ann-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ann-grid{display:grid;grid-template-columns:72px 1fr;gap:4px 8px;align-items:center}
 </style>
 </head>
 <body>
@@ -150,11 +176,68 @@ pre{background:#0d1117;border:1px solid #21262d;border-radius:5px;padding:10px;f
   <!-- STEP 1: WRITE & SUBMIT -->
   <div class="card">
     <div class="card-title"><span class="sn" id="sn1">1</span>发布方：写配置 → 提交审核</div>
-    <p class="hint">编辑 JSON 配置后提交。<strong style="color:#79c0ff">提示：初始化已预置 v2 待审核，可直接跳到第 2 步体验审核流程。</strong></p>
-    <textarea id="config-json" rows="9">${EXAMPLE_CONFIG}</textarea>
-    <div style="margin-top:8px;display:flex;gap:6px">
+    <p class="hint">按字段填写配置后提交。<strong style="color:#79c0ff">提示：初始化已预置 v2 待审核，可直接跳到第 2 步。</strong></p>
+    <div class="tabs" style="margin-bottom:10px">
+      <button class="tab active" id="tab-form-btn">表单编辑</button>
+      <button class="tab" id="tab-raw-btn">原始 JSON</button>
+    </div>
+
+    <!-- 表单编辑 -->
+    <div id="tab-form-content">
+      <div class="fsec">
+        <div class="fsec-title">📦 版本更新</div>
+        <div class="fgrid">
+          <span class="flabel">最新版本</span><input type="text" class="finput" id="f-latest-version" placeholder="2.6.0">
+          <span class="flabel">最低版本</span><input type="text" class="finput" id="f-min-version" placeholder="2.0.0">
+          <span class="flabel">下载地址</span><input type="text" class="finput" id="f-download-url" placeholder="https://cdn.example.com/v2.6.0.pkg">
+          <span class="flabel">SHA256</span><input type="text" class="finput" id="f-sha256" placeholder="hex hash">
+          <span class="flabel">更新说明</span><input type="text" class="finput" id="f-release-notes" placeholder="本次更新说明">
+          <span class="flabel">强制更新</span>
+          <div class="tgl-wrap"><label class="tgl"><input type="checkbox" id="f-force"><span class="tgl-sl"></span></label><span id="f-force-lbl" class="tgl-lbl">OFF</span></div>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">🌐 端点地址 <button class="fadd" id="btn-add-endpoint">+ 添加</button></div>
+        <div id="endpoints-list"></div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">🚩 功能开关 <button class="fadd" id="btn-add-feature">+ 添加</button></div>
+        <div id="features-list"></div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">🔒 安全设置</div>
+        <div class="fgrid">
+          <span class="flabel">最低 TLS</span>
+          <select class="fselect" id="f-tls"><option value="1.2">TLS 1.2</option><option value="1.3" selected>TLS 1.3</option></select>
+          <span class="flabel">证书 Pin</span><input type="text" class="finput" id="f-cert-pin" placeholder="sha256/...">
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">🔧 维护模式</div>
+        <div class="fgrid">
+          <span class="flabel">启用维护</span>
+          <div class="tgl-wrap"><label class="tgl"><input type="checkbox" id="f-maintenance-enabled"><span class="tgl-sl"></span></label><span id="f-maint-lbl" class="tgl-lbl">OFF</span></div>
+          <span class="flabel">维护说明</span><input type="text" class="finput" id="f-maintenance-message" placeholder="系统维护中，请稍后再试">
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">📢 公告 <button class="fadd" id="btn-add-announcement">+ 添加</button></div>
+        <div id="announcements-list"></div>
+      </div>
+    </div>
+
+    <!-- 原始 JSON -->
+    <div id="tab-raw-content" style="display:none">
+      <div style="margin-bottom:6px;display:flex;gap:6px;align-items:center">
+        <span style="color:#8b949e;font-size:11px">直接编辑 JSON（高级模式）</span>
+        <button class="sec" style="font-size:10px;padding:3px 8px" id="btn-sync-to-form">← 同步到表单</button>
+      </div>
+      <textarea id="config-json" rows="14" placeholder="{}"></textarea>
+    </div>
+
+    <div style="margin-top:10px;display:flex;gap:6px">
       <button id="btn-submit">提交审核</button>
-      <button class="sec" id="btn-reset-json">重置示例</button>
+      <button class="sec" id="btn-reset-form">重置示例</button>
     </div>
     <div id="submit-msg"></div>
   </div>
@@ -357,6 +440,145 @@ function renderFullPreview(config, diffEntries) {
   return '<table class="preview-table"><tbody>'+rows+'</tbody></table>';
 }
 
+// ── Config form ───────────────────────────────────────────────
+var activeConfigTab = 'form';
+
+function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function addEndpointRow(k, v) {
+  var list = document.getElementById('endpoints-list');
+  var row = document.createElement('div');
+  row.className = 'ep-row';
+  var ki = document.createElement('input'); ki.type='text'; ki.className='ep-k ep-kf'; ki.placeholder='名称 (如 website)'; ki.value=k||'';
+  var vi = document.createElement('input'); vi.type='text'; vi.className='finput ep-vf'; vi.placeholder='https://...'; vi.value=v||'';
+  var db = document.createElement('button'); db.className='delbtn'; db.textContent='×'; db.title='删除';
+  db.addEventListener('click', function(){ row.remove(); });
+  row.appendChild(ki); row.appendChild(vi); row.appendChild(db);
+  list.appendChild(row);
+}
+
+function addFeatureRow(k, v) {
+  var list = document.getElementById('features-list');
+  var row = document.createElement('div');
+  row.className = 'feat-row';
+  var ki = document.createElement('input'); ki.type='text'; ki.className='feat-key'; ki.placeholder='功能名称 (如 dark_mode)'; ki.value=k||'';
+  var uid = 'fc-'+Date.now()+'-'+Math.floor(Math.random()*9999);
+  var wrap = document.createElement('div'); wrap.className='tgl-wrap';
+  var lbl = document.createElement('label'); lbl.className='tgl'; lbl.htmlFor=uid;
+  var chk = document.createElement('input'); chk.type='checkbox'; chk.id=uid; chk.checked=!!v;
+  var sl = document.createElement('span'); sl.className='tgl-sl';
+  lbl.appendChild(chk); lbl.appendChild(sl);
+  var vl = document.createElement('span'); vl.className='tgl-lbl';
+  function upd(){ vl.textContent=chk.checked?'ON':'OFF'; vl.style.color=chk.checked?'#3fb950':'#555'; }
+  chk.addEventListener('change', upd); upd();
+  wrap.appendChild(lbl); wrap.appendChild(vl);
+  var db = document.createElement('button'); db.className='delbtn'; db.textContent='×';
+  db.addEventListener('click', function(){ row.remove(); });
+  row.appendChild(ki); row.appendChild(wrap); row.appendChild(db);
+  list.appendChild(row);
+}
+
+function addAnnouncementCard(data) {
+  data = data || { id:'ann-'+Date.now(), type:'banner', title:'', content:'', priority:1, expires_at:Math.floor(Date.now()/1000)+86400*30 };
+  var list = document.getElementById('announcements-list');
+  var card = document.createElement('div'); card.className='ann-card';
+  var head = document.createElement('div'); head.className='ann-head';
+  var hl = document.createElement('span'); hl.style.cssText='color:#8b949e;font-size:11px'; hl.textContent='公告';
+  var db = document.createElement('button'); db.className='delbtn'; db.textContent='×';
+  db.addEventListener('click', function(){ card.remove(); });
+  head.appendChild(hl); head.appendChild(db);
+  var grid = document.createElement('div'); grid.className='ann-grid';
+  function lrow(label, inp) {
+    var l=document.createElement('span'); l.className='flabel'; l.textContent=label;
+    grid.appendChild(l); grid.appendChild(inp);
+  }
+  var iid=document.createElement('input'); iid.type='text'; iid.className='finput ann-id'; iid.value=escH(data.id||'');
+  var ityp=document.createElement('select'); ityp.className='fselect ann-type';
+  ['banner','popup','toast','fullscreen'].forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; if(data.type===t) o.selected=true; ityp.appendChild(o); });
+  var itti=document.createElement('input'); itti.type='text'; itti.className='finput ann-title'; itti.value=escH(data.title||''); itti.placeholder='可选';
+  var ico=document.createElement('input'); ico.type='text'; ico.className='finput ann-content'; ico.value=escH(data.content||''); ico.placeholder='公告内容';
+  var ipr=document.createElement('input'); ipr.type='number'; ipr.className='finput ann-priority'; ipr.value=data.priority||1; ipr.min=1; ipr.max=10;
+  var iex=document.createElement('input'); iex.type='number'; iex.className='finput ann-expires'; iex.value=data.expires_at||''; iex.placeholder='Unix 时间戳';
+  lrow('ID', iid); lrow('类型', ityp); lrow('标题', itti); lrow('内容', ico); lrow('优先级', ipr); lrow('过期时间', iex);
+  card.appendChild(head); card.appendChild(grid);
+  list.appendChild(card);
+}
+
+function formToConfig() {
+  var cfg = {};
+  var lv = document.getElementById('f-latest-version').value.trim();
+  if (lv) {
+    cfg.update = {
+      latest_version: lv,
+      min_version: document.getElementById('f-min-version').value.trim(),
+      download_url: document.getElementById('f-download-url').value.trim(),
+      sha256: document.getElementById('f-sha256').value.trim(),
+      force: document.getElementById('f-force').checked,
+    };
+    var rn = document.getElementById('f-release-notes').value.trim();
+    if (rn) cfg.update.release_notes = rn;
+  }
+  var epRows = document.querySelectorAll('#endpoints-list .ep-row');
+  if (epRows.length) {
+    cfg.endpoints = {};
+    epRows.forEach(function(r){ var k=r.querySelector('.ep-kf').value.trim(); var v=r.querySelector('.ep-vf').value.trim(); if(k&&v) cfg.endpoints[k]=v; });
+  }
+  var featRows = document.querySelectorAll('#features-list .feat-row');
+  if (featRows.length) {
+    cfg.features = {};
+    featRows.forEach(function(r){ var k=r.querySelector('.feat-key').value.trim(); var v=r.querySelector('input[type=checkbox]').checked; if(k) cfg.features[k]=v; });
+  }
+  var tls = document.getElementById('f-tls').value;
+  var pin = document.getElementById('f-cert-pin').value.trim();
+  var maintOn = document.getElementById('f-maintenance-enabled').checked;
+  var maintMsg = document.getElementById('f-maintenance-message').value.trim();
+  if (tls || pin || maintOn || maintMsg) {
+    cfg.custom = {};
+    if (tls || pin) cfg.custom.security = {};
+    if (tls) cfg.custom.security.min_tls = tls;
+    if (pin) cfg.custom.security.cert_pin = pin;
+    cfg.custom.maintenance = { enabled: maintOn, message: maintMsg };
+  }
+  var annCards = document.querySelectorAll('#announcements-list .ann-card');
+  if (annCards.length) {
+    cfg.announcements = [];
+    annCards.forEach(function(c){
+      var id=c.querySelector('.ann-id').value.trim();
+      var type=c.querySelector('.ann-type').value;
+      var title=c.querySelector('.ann-title').value.trim();
+      var content=c.querySelector('.ann-content').value.trim();
+      var priority=parseInt(c.querySelector('.ann-priority').value)||1;
+      var expires=parseInt(c.querySelector('.ann-expires').value)||0;
+      if(id&&content&&expires){ var a={id:id,type:type,content:content,priority:priority,expires_at:expires}; if(title) a.title=title; cfg.announcements.push(a); }
+    });
+  }
+  return cfg;
+}
+
+function configToForm(config) {
+  var u = config.update || {};
+  document.getElementById('f-latest-version').value = u.latest_version||'';
+  document.getElementById('f-min-version').value = u.min_version||'';
+  document.getElementById('f-download-url').value = u.download_url||'';
+  document.getElementById('f-sha256').value = u.sha256||'';
+  document.getElementById('f-release-notes').value = u.release_notes||'';
+  document.getElementById('f-force').checked = !!u.force;
+  document.getElementById('f-force').dispatchEvent(new Event('change'));
+  document.getElementById('endpoints-list').innerHTML='';
+  Object.entries(config.endpoints||{}).forEach(function(e){ addEndpointRow(e[0],e[1]); });
+  document.getElementById('features-list').innerHTML='';
+  Object.entries(config.features||{}).forEach(function(e){ addFeatureRow(e[0],e[1]); });
+  var sec=(config.custom||{}).security||{};
+  document.getElementById('f-tls').value=sec.min_tls||'1.3';
+  document.getElementById('f-cert-pin').value=sec.cert_pin||'';
+  var maint=(config.custom||{}).maintenance||{};
+  document.getElementById('f-maintenance-enabled').checked=!!maint.enabled;
+  document.getElementById('f-maintenance-enabled').dispatchEvent(new Event('change'));
+  document.getElementById('f-maintenance-message').value=maint.message||'';
+  document.getElementById('announcements-list').innerHTML='';
+  (config.announcements||[]).forEach(function(a){ addAnnouncementCard(a); });
+}
+
 // ── Init ─────────────────────────────────────────────────────
 function doInit() {
   apiDev('POST','/dev/init').then(function(d) {
@@ -383,6 +605,8 @@ function doInit() {
     document.getElementById('keys-card').style.display='block';
     document.getElementById('mv-pub').value = d.signing_public_key;
 
+    if (d.form_preset) configToForm(d.form_preset);
+
     markSN(0,'done'); markSN(1,'active');
     loadPending();
   }).catch(function(e){
@@ -394,8 +618,13 @@ function doInit() {
 function doSubmit() {
   if (!S.publisherToken) { document.getElementById('submit-msg').innerHTML='<div class="msg warn">⚠ 请先初始化</div>'; return; }
   var json;
-  try { json = JSON.parse(document.getElementById('config-json').value); }
-  catch(e) { document.getElementById('submit-msg').innerHTML='<div class="msg err">✗ JSON 格式错误: '+e.message+'</div>'; return; }
+  try {
+    if (activeConfigTab === 'form') {
+      json = formToConfig();
+    } else {
+      json = JSON.parse(document.getElementById('config-json').value);
+    }
+  } catch(e) { document.getElementById('submit-msg').innerHTML='<div class="msg err">✗ 解析失败: '+e.message+'</div>'; return; }
 
   apiPub('POST','/v1/admin/configs',{changes:json})
     .then(function(d){ return apiPub('POST','/v1/admin/configs/'+d.version+'/submit'); })
@@ -626,9 +855,49 @@ document.getElementById('btn-submit').addEventListener('click', doSubmit);
 document.getElementById('btn-refresh').addEventListener('click', loadPending);
 document.getElementById('btn-sign-publish').addEventListener('click', doSignPublish);
 document.getElementById('btn-verify').addEventListener('click', doVerify);
-document.getElementById('btn-reset-json').addEventListener('click', function(){ document.getElementById('config-json').value=EXAMPLE; });
+document.getElementById('btn-reset-form').addEventListener('click', function(){ configToForm(JSON.parse(EXAMPLE)); });
 document.getElementById('btn-manual-sign').addEventListener('click', doManualSign);
 document.getElementById('btn-manual-verify').addEventListener('click', doManualVerify);
+
+// Form tab switching
+document.getElementById('tab-form-btn').addEventListener('click', function(){
+  activeConfigTab='form';
+  document.getElementById('tab-form-content').style.display='block';
+  document.getElementById('tab-raw-content').style.display='none';
+  this.classList.add('active'); document.getElementById('tab-raw-btn').classList.remove('active');
+});
+document.getElementById('tab-raw-btn').addEventListener('click', function(){
+  activeConfigTab='raw';
+  try{ document.getElementById('config-json').value=JSON.stringify(formToConfig(),null,2); }catch(e){}
+  document.getElementById('tab-raw-content').style.display='block';
+  document.getElementById('tab-form-content').style.display='none';
+  this.classList.add('active'); document.getElementById('tab-form-btn').classList.remove('active');
+});
+document.getElementById('btn-sync-to-form').addEventListener('click', function(){
+  try{
+    configToForm(JSON.parse(document.getElementById('config-json').value));
+    activeConfigTab='form';
+    document.getElementById('tab-form-content').style.display='block';
+    document.getElementById('tab-raw-content').style.display='none';
+    document.getElementById('tab-form-btn').classList.add('active');
+    document.getElementById('tab-raw-btn').classList.remove('active');
+  }catch(e){ alert('JSON 解析失败: '+e.message); }
+});
+document.getElementById('btn-add-endpoint').addEventListener('click', function(){ addEndpointRow('',''); });
+document.getElementById('btn-add-feature').addEventListener('click', function(){ addFeatureRow('',false); });
+document.getElementById('btn-add-announcement').addEventListener('click', function(){ addAnnouncementCard(null); });
+
+// Toggle labels
+(function(){
+  var forceChk = document.getElementById('f-force');
+  var forceLbl = document.getElementById('f-force-lbl');
+  function upd(){ forceLbl.textContent=forceChk.checked?'ON':'OFF'; forceLbl.style.color=forceChk.checked?'#f85149':'#555'; }
+  forceChk.addEventListener('change', upd); upd();
+  var maintChk = document.getElementById('f-maintenance-enabled');
+  var maintLbl = document.getElementById('f-maint-lbl');
+  function upd2(){ maintLbl.textContent=maintChk.checked?'ON':'OFF'; maintLbl.style.color=maintChk.checked?'#ffa657':'#555'; }
+  maintChk.addEventListener('change', upd2); upd2();
+})();
 
 document.getElementById('tab-btn-sign').addEventListener('click', function(){
   document.querySelectorAll('.tab,.tab-content').forEach(function(el){ el.classList.remove('active'); });
@@ -648,6 +917,9 @@ document.getElementById('tab-btn-verify').addEventListener('click', function(){
 document.querySelectorAll('.kv-val.priv').forEach(function(el){
   el.addEventListener('click', function(){ this.classList.toggle('shown'); });
 });
+
+// Pre-populate form with example config on page load
+configToForm(JSON.parse(EXAMPLE));
 
 apiDev('GET','/dev/status').then(function(d){
   if(d.initialized){ document.getElementById('status-badge').textContent='服务有数据，需重新初始化'; document.getElementById('status-badge').className='bdg bdg-warn'; }
