@@ -9,6 +9,8 @@ import { createUserRoutes } from "./routes/admin/users.ts";
 import { createConfigRoutes } from "./routes/admin/configs.ts";
 import { createKeyRoutes } from "./routes/admin/keys.ts";
 import { createRateLimiter } from "./middleware/rate-limit.ts";
+import { createDevRoutes } from "./routes/dev.ts";
+import { createDevUiRoute } from "./routes/devui.ts";
 
 export interface ServerOptions {
   readonly dbPath?: string;
@@ -63,13 +65,30 @@ export function createApp(store: Store): Hono {
 }
 
 export function startServer(options: ServerOptions = {}): ServerInstance {
-  const dbPath = options.dbPath ?? "publish.db";
+  const isDevUi = process.env.DEV_UI === "true";
+
+  if (isDevUi) {
+    // Set safe defaults so the server starts with a single command, no .env needed
+    process.env.JWT_SECRET ??= "dev-jwt-secret-do-not-use-in-production";
+    process.env.KEY_ENCRYPTION_KEY ??= "dev-key-encryption-key-do-not-use-in-production";
+  }
+
+  // In dev UI mode, use an in-memory DB so every restart is a clean slate
+  const dbPath = options.dbPath ?? (isDevUi ? ":memory:" : "publish.db");
   const port = options.port ?? parseInt(process.env.PORT ?? "3000", 10);
 
   const store = new AdminStore(dbPath);
   store.runMigrations();
 
   const app = createApp(store);
+
+  if (isDevUi) {
+    const devRoutes = createDevRoutes(store);
+    app.route("/dev", devRoutes);
+    const devUi = createDevUiRoute();
+    app.route("/dev", devUi);
+    console.log(`Dev UI:    http://localhost:${port}/dev`);
+  }
 
   const server = Bun.serve({
     fetch: app.fetch,
